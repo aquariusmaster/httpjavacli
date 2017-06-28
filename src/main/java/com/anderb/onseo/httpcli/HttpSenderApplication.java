@@ -26,18 +26,19 @@ public class HttpSenderApplication {
         int requestPerSecond = Integer.parseInt(properties.getProperty("request_per_second"));
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(poolSize);
+        long start = System.currentTimeMillis();
 
-//        for (int i = 0; i < requestPerSecond; i++){
-//            Runnable worker = new HttpSenderThread(url);
-//            executor.execute(worker);
-////            Thread.sleep(1000/requestPerSecond);
-//        }
-        Runnable worker = new HttpSenderThread(url);
-        executor.scheduleAtFixedRate(worker, 0, 1000/requestPerSecond, TimeUnit.MILLISECONDS);
-//        executor.shutdown();
-//        while (!executor.isTerminated()) {
-//        }
-//        System.out.println("Finished all threads");
+        for (int i = 0; i < requestPerSecond; i++){
+            Runnable worker = new HttpSenderThread(url);
+            executor.execute(worker);
+            Thread.sleep(1000/requestPerSecond);
+        }
+//        Runnable worker = new HttpSenderThread(url);
+//        executor.scheduleAtFixedRate(worker, 0, 1000/requestPerSecond, TimeUnit.MILLISECONDS);
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+        }
+        System.out.println("Finished all threads: " + (System.currentTimeMillis() - start));
     }
 
 }

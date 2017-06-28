@@ -16,9 +16,9 @@ public class HttpSenderThread implements Runnable {
 
     public void run() {
 //        System.out.println(Thread.currentThread().getName()+" Start. URL = "+ url);
-        long start = System.currentTimeMillis();
+//        long start = System.currentTimeMillis();
         int code = sendGet(url);
-        System.out.println(Thread.currentThread().getName()+" - " + (System.currentTimeMillis() - start) + " milliseconds result code: " + code);
+//        System.out.println(Thread.currentThread().getName()+" - " + (System.currentTimeMillis() - start) + " milliseconds result code: " + code);
     }
 
     // HTTP GET request
