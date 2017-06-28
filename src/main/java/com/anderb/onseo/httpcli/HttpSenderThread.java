@@ -15,7 +15,9 @@ public class HttpSenderThread implements Runnable {
     }
 
     public void run() {
+        long start = System.currentTimeMillis();
         int code = sendGet(url);
+        System.out.println(Thread.currentThread().getName()+" - " + (System.currentTimeMillis() - start) + " milliseconds result code: " + code);
     }
 
     // HTTP GET request
@@ -31,7 +33,6 @@ public class HttpSenderThread implements Runnable {
 
             //add request header
             con.setRequestProperty("User-Agent", "Mozilla/5.0");
-            con.setDoOutput(false);
 
             //get responseCode
             returnCode = con.getResponseCode();
