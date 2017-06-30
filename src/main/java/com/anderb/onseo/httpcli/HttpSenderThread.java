@@ -1,6 +1,9 @@
 package com.anderb.onseo.httpcli;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 
 /**
@@ -15,8 +18,11 @@ public class HttpSenderThread implements Runnable {
     }
 
     public void run() {
+
         long start = System.currentTimeMillis();
+
         int code = sendGet(url);
+
         System.out.println(Thread.currentThread().getName()+" - " + (System.currentTimeMillis() - start) + " milliseconds result code: " + code);
     }
 
@@ -24,7 +30,7 @@ public class HttpSenderThread implements Runnable {
     private int sendGet(String url) {
 
         int returnCode = 0;
-        try{
+        try {
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
@@ -34,12 +40,17 @@ public class HttpSenderThread implements Runnable {
             //add request header
             con.setRequestProperty("User-Agent", "Mozilla/5.0");
 
+            con.setReadTimeout(20_000);
+
             //get responseCode
             returnCode = con.getResponseCode();
 
-        }catch(Exception e){
+        }catch(IOException e){
+            System.err.println("Error while procesing request: " + e);
             throw new RuntimeException(e);
         }
+
+
         return returnCode;
     }
 

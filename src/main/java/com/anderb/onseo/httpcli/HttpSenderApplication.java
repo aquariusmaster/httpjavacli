@@ -10,7 +10,7 @@ import java.util.concurrent.ScheduledExecutorService;
  */
 public class HttpSenderApplication {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
         Properties properties = PropertiesReader.getProperties();
         System.out.println(properties);
@@ -19,16 +19,22 @@ public class HttpSenderApplication {
         int duration = Integer.parseInt(properties.getProperty("duration"));
 
         ExecutorService executor = Executors.newCachedThreadPool();
-        long start = System.currentTimeMillis();
+
         long requestCount = 0;
         long period = 1000/requestPerSecond;
-        System.out.println(period);
+        long start = System.currentTimeMillis();
+
+        System.out.println("Application starting");
 
         while((System.currentTimeMillis() - start) < duration*1000){
 
             Runnable worker = new HttpSenderThread(url);
             executor.submit(worker);
-            Thread.sleep(period);
+            try {
+                Thread.sleep(period);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             requestCount++;
         }
         executor.shutdown();
@@ -37,6 +43,6 @@ public class HttpSenderApplication {
         long finishedTime = System.currentTimeMillis() - start;
         System.out.println("Finished in: " + finishedTime + " milliseconds");
         System.out.println("Total requests: " + requestCount + ".");
-        System.out.println(String.format("%s request per seconds", (double) requestCount / (double)(finishedTime / 1000) ));
+        System.out.printf("Average time: %.1f request per seconds", (double) requestCount / (double)(finishedTime / 1000) );
     }
 }
